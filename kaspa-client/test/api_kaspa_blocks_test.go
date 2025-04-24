@@ -13,7 +13,7 @@ import (
 	"context"
 	"testing"
 
-	openapiclient "github.com/srene/kaspa_get"
+	openapiclient "github.com/srene/kaspa_get/kaspa-client"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

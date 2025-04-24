@@ -1,4 +1,4 @@
-module github.com/srene/kaspa_get
+module github.com/srene/kaspa_get/kaspa-client
 
 go 1.18
 
