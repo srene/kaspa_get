@@ -1,6 +1,6 @@
 module github.com/srene/kaspa_get/kaspa-client
 
-go 1.18
+go 1.23.7
 
 require github.com/stretchr/testify v1.10.0
 
