@@ -1,15 +1,16 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
-	"io/ioutil"
-	"net/http"
+	"log"
+
+	openapiclient "github.com/srene/kaspa_get/kaspa-client"
 )
 
 // TransactionResponse represents the structure of the response from the Kaspa API
-type TransactionResponse struct {
-	TransactionID string `json:"transactionId"`
+/*type TransactionResponse struct {
+	Payload string `json:"payload"`
 	// Add other relevant fields based on the full response structure
 }
 
@@ -44,5 +45,16 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Fetched transaction: %+v\n", tx)
+	fmt.Printf("Fetched transaction: %+v\n", tx.Payload)
+}*/
+
+func main() {
+	cfg := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(cfg)
+
+	resp, _, err := apiClient.YourAPIService.YourEndpointMethod(context.Background(), "someParam")
+	if err != nil {
+		log.Fatalf("API call failed: %v", err)
+	}
+	fmt.Printf("Result: %+v\n", resp)
 }

@@ -1,0 +1,2906 @@
+openapi: 3.1.0
+info:
+  contact:
+    name: lAmeR1
+  description: This server is to communicate with kaspa network via REST-API
+  license:
+    name: MIT LICENSE
+  title: Kaspa REST-API server
+  version: tbd
+servers:
+- url: /
+paths:
+  /addresses/{kaspaAddress}/balance:
+    get:
+      description: Get balance for a given kaspa address
+      operationId: get_balance_from_kaspa_address_addresses__kaspaAddress__balance_get
+      parameters:
+      - description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+        explode: false
+        in: path
+        name: kaspaAddress
+        required: true
+        schema:
+          description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          pattern: "^kaspatest:[a-z0-9]{61,63}$"
+          title: Kaspaaddress
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Balance From Kaspa Address
+      tags:
+      - Kaspa addresses
+  /addresses/{kaspaAddress}/utxos:
+    get:
+      description: Lists all open utxo for a given kaspa address
+      operationId: get_utxos_for_address_addresses__kaspaAddress__utxos_get
+      parameters:
+      - description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+        explode: false
+        in: path
+        name: kaspaAddress
+        required: true
+        schema:
+          description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          pattern: "^kaspatest:[a-z0-9]{61,63}$"
+          title: Kaspaaddress
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/UtxoResponse'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Utxos For Address
+      tags:
+      - Kaspa addresses
+  /addresses/utxos:
+    post:
+      description: Lists all open utxo for a given kaspa address
+      operationId: get_utxos_for_addresses_addresses_utxos_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtxoRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/UtxoResponse'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Utxos For Addresses
+      tags:
+      - Kaspa addresses
+  /info/virtual-chain-blue-score:
+    get:
+      description: Returns the blue score of virtual selected parent
+      operationId: get_virtual_selected_parent_blue_score_info_virtual_chain_blue_score_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/endpoints__get_virtual_chain_blue_score__BlockdagResponse'
+          description: Successful Response
+      summary: Get Virtual Selected Parent Blue Score
+      tags:
+      - Kaspa network info
+  /blocks/{blockId}:
+    get:
+      description: Get block information for a given block id
+      operationId: get_block_blocks__blockId__get
+      parameters:
+      - explode: false
+        in: path
+        name: blockId
+        required: true
+        schema:
+          pattern: "[a-f0-9]{64}"
+          title: Blockid
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: includeTransactions
+        required: false
+        schema:
+          default: true
+          title: Includetransactions
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: includeColor
+        required: false
+        schema:
+          default: false
+          title: Includecolor
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockModel'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Block
+      tags:
+      - Kaspa blocks
+  /blocks:
+    get:
+      description: Lists block beginning from a low hash (block id).
+      operationId: get_blocks_blocks_get
+      parameters:
+      - explode: true
+        in: query
+        name: lowHash
+        required: true
+        schema:
+          pattern: "[a-f0-9]{64}"
+          title: Lowhash
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: includeBlocks
+        required: false
+        schema:
+          default: false
+          title: Includeblocks
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: includeTransactions
+        required: false
+        schema:
+          default: false
+          title: Includetransactions
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockResponse'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Blocks
+      tags:
+      - Kaspa blocks
+  /blocks-from-bluescore:
+    get:
+      description: Lists blocks of a given blueScore
+      operationId: get_blocks_from_bluescore_blocks_from_bluescore_get
+      parameters:
+      - explode: true
+        in: query
+        name: blueScore
+        required: false
+        schema:
+          default: 43679173
+          title: Bluescore
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: includeTransactions
+        required: false
+        schema:
+          default: false
+          title: Includetransactions
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BlockModel'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Blocks From Bluescore
+      tags:
+      - Kaspa blocks
+  /info/blockdag:
+    get:
+      description: Get some global Kaspa BlockDAG information
+      operationId: get_blockdag_info_blockdag_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/endpoints__get_blockdag__BlockdagResponse'
+          description: Successful Response
+      summary: Get Blockdag
+      tags:
+      - Kaspa network info
+  /info/coinsupply:
+    get:
+      description: Get $KAS coin supply information
+      operationId: get_coinsupply_info_coinsupply_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoinSupplyResponse'
+          description: Successful Response
+      summary: Get Coinsupply
+      tags:
+      - Kaspa network info
+  /info/coinsupply/circulating:
+    get:
+      description: Get circulating amount of $KAS token as numerical value
+      operationId: get_circulating_coins_info_coinsupply_circulating_get
+      parameters:
+      - explode: true
+        in: query
+        name: in_billion
+        required: false
+        schema:
+          default: false
+          title: In Billion
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Circulating Coins
+      tags:
+      - Kaspa network info
+  /info/coinsupply/total:
+    get:
+      description: Get total amount of $KAS token as numerical value
+      operationId: get_total_coins_info_coinsupply_total_get
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Successful Response
+      summary: Get Total Coins
+      tags:
+      - Kaspa network info
+  /info/kaspad:
+    get:
+      description: "Get some information for kaspad instance, which is currently connected."
+      operationId: get_kaspad_info_info_kaspad_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KaspadInfoResponse'
+          description: Successful Response
+      summary: Get Kaspad Info
+      tags:
+      - Kaspa network info
+  /info/network:
+    get:
+      description: Get some global kaspa network information
+      operationId: get_network_info_network_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkResponse'
+          description: Successful Response
+      summary: Get Network
+      tags:
+      - Kaspa network info
+  /info/fee-estimate:
+    get:
+      description: |-
+        Get fee estimate from Kaspad.
+
+        For all buckets, feerate values represent fee/mass of a transaction in `sompi/gram` units.<br>
+        Given a feerate value recommendation, calculate the required fee by
+        taking the transaction mass and multiplying it by feerate: `fee = feerate * mass(tx)`
+      operationId: get_fee_estimate_info_fee_estimate_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeeEstimateResponse'
+          description: Successful Response
+      summary: Get Fee Estimate
+      tags:
+      - Kaspa network info
+  /info/price:
+    get:
+      description: Returns the current price for Kaspa in USD.
+      operationId: get_price_info_price_get
+      parameters:
+      - explode: true
+        in: query
+        name: stringOnly
+        required: false
+        schema:
+          default: false
+          title: Stringonly
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Get_Price_Info_Price_Get'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Price
+      tags:
+      - Kaspa network info
+  /transactions/{transactionId}:
+    get:
+      description: Get details for a given transaction id
+      operationId: get_transaction_transactions__transactionId__get
+      parameters:
+      - explode: false
+        in: path
+        name: transactionId
+        required: true
+        schema:
+          pattern: "[a-f0-9]{64}"
+          title: Transactionid
+          type: string
+        style: simple
+      - description: Specify a containing block (if known) for faster lookup
+        explode: true
+        in: query
+        name: blockHash
+        required: false
+        schema:
+          description: Specify a containing block (if known) for faster lookup
+          title: Blockhash
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: inputs
+        required: false
+        schema:
+          default: true
+          title: Inputs
+          type: boolean
+        style: form
+      - explode: true
+        in: query
+        name: outputs
+        required: false
+        schema:
+          default: true
+          title: Outputs
+          type: boolean
+        style: form
+      - description: Use this parameter if you want to fetch the TransactionInput
+          previous outpoint details. Light fetches only the address and amount. Full
+          fetches the whole TransactionOutput and adds it into each TxInput.
+        explode: true
+        in: query
+        name: resolve_previous_outpoints
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/endpoints__get_transactions__PreviousOutpointLookupMode'
+          default: "no"
+          description: Use this parameter if you want to fetch the TransactionInput
+            previous outpoint details. Light fetches only the address and amount.
+            Full fetches the whole TransactionOutput and adds it into each TxInput.
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxModel'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Transaction
+      tags:
+      - Kaspa transactions
+  /transactions/search:
+    post:
+      description: Search for transactions by transaction_ids or blue_score
+      operationId: search_for_transactions_transactions_search_post
+      parameters:
+      - explode: true
+        in: query
+        name: fields
+        required: false
+        schema:
+          default: ""
+          title: Fields
+          type: string
+        style: form
+      - description: Use this parameter if you want to fetch the TransactionInput
+          previous outpoint details. Light fetches only the address and amount. Full
+          fetches the whole TransactionOutput and adds it into each TxInput.
+        explode: true
+        in: query
+        name: resolve_previous_outpoints
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/endpoints__get_transactions__PreviousOutpointLookupMode'
+          default: "no"
+          description: Use this parameter if you want to fetch the TransactionInput
+            previous outpoint details. Light fetches only the address and amount.
+            Full fetches the whole TransactionOutput and adds it into each TxInput.
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TxSearch'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TxModel'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Search For Transactions
+      tags:
+      - Kaspa transactions
+  /addresses/active:
+    post:
+      description: |-
+        This endpoint checks if addresses have had any transaction activity in the past.
+        It is specifically designed for HD Wallets to verify historical address activity.
+      operationId: get_addresses_active_addresses_active_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressesActiveRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TxIdResponse'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Addresses Active
+      tags:
+      - Kaspa addresses
+  /addresses/{kaspaAddress}/transactions-count:
+    get:
+      description: Count the number of transactions associated with this address
+      operationId: get_transaction_count_for_address_addresses__kaspaAddress__transactions_count_get
+      parameters:
+      - description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+        explode: false
+        in: path
+        name: kaspaAddress
+        required: true
+        schema:
+          description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          pattern: "^kaspatest:[a-z0-9]{61,63}$"
+          title: Kaspaaddress
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionCount'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Transaction Count For Address
+      tags:
+      - Kaspa addresses
+  /addresses/{kaspaAddress}/name:
+    get:
+      description: Get the name for an address
+      operationId: get_name_for_address_addresses__kaspaAddress__name_get
+      parameters:
+      - description: Kaspa address as string e.g. kaspa:qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqkx9awp4e
+        explode: false
+        in: path
+        name: kaspaAddress
+        required: true
+        schema:
+          description: Kaspa address as string e.g. kaspa:qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqkx9awp4e
+          pattern: "^kaspatest:[a-z0-9]{61,63}$"
+          title: Kaspaaddress
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressName'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Name For Address
+      tags:
+      - Kaspa addresses
+  /addresses/{kaspaAddress}/full-transactions:
+    get:
+      description: "DEPRECATED, ONLY RETURNS THE FIRST PAGE"
+      operationId: get_full_transactions_for_address_addresses__kaspaAddress__full_transactions_get
+      parameters:
+      - description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+        explode: false
+        in: path
+        name: kaspaAddress
+        required: true
+        schema:
+          description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          pattern: "^kaspatest:[a-z0-9]{61,63}$"
+          title: Kaspaaddress
+          type: string
+        style: simple
+      - description: The number of records to get
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 50
+          description: The number of records to get
+          maximum: 500.0
+          minimum: 1.0
+          title: Limit
+          type: integer
+        style: form
+      - description: The offset from which to get records
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          description: The offset from which to get records
+          minimum: 0.0
+          title: Offset
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: fields
+        required: false
+        schema:
+          default: ""
+          title: Fields
+          type: string
+        style: form
+      - description: Use this parameter if you want to fetch the TransactionInput
+          previous outpoint details. Light fetches only the adress and amount. Full
+          fetches the whole TransactionOutput and adds it into each TxInput.
+        explode: true
+        in: query
+        name: resolve_previous_outpoints
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/endpoints__get_address_transactions__PreviousOutpointLookupMode'
+          default: "no"
+          description: Use this parameter if you want to fetch the TransactionInput
+            previous outpoint details. Light fetches only the adress and amount. Full
+            fetches the whole TransactionOutput and adds it into each TxInput.
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TxModel'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Full Transactions For Address
+      tags:
+      - Kaspa addresses
+  /addresses/{kaspaAddress}/full-transactions-page:
+    get:
+      description: |-
+        Get all transactions for a given address from database.
+        And then get their related full transaction data
+      operationId: get_full_transactions_for_address_page_addresses__kaspaAddress__full_transactions_page_get
+      parameters:
+      - description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+        explode: false
+        in: path
+        name: kaspaAddress
+        required: true
+        schema:
+          description: Kaspa address as string e.g. kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          pattern: "^kaspatest:[a-z0-9]{61,63}$"
+          title: Kaspaaddress
+          type: string
+        style: simple
+      - description: The max number of records to get. For paging combine with using
+          'before/after' from oldest previous result. Use value of X-Next-Page-Before/-After
+          as long as header is present to continue paging. The actual number of transactions
+          returned for each page can be > limit.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 50
+          description: The max number of records to get. For paging combine with using
+            'before/after' from oldest previous result. Use value of X-Next-Page-Before/-After
+            as long as header is present to continue paging. The actual number of
+            transactions returned for each page can be > limit.
+          maximum: 500.0
+          minimum: 1.0
+          title: Limit
+          type: integer
+        style: form
+      - description: Only include transactions with block time before this (epoch-millis)
+        explode: true
+        in: query
+        name: before
+        required: false
+        schema:
+          default: 0
+          description: Only include transactions with block time before this (epoch-millis)
+          minimum: 0.0
+          title: Before
+          type: integer
+        style: form
+      - description: Only include transactions with block time after this (epoch-millis)
+        explode: true
+        in: query
+        name: after
+        required: false
+        schema:
+          default: 0
+          description: Only include transactions with block time after this (epoch-millis)
+          minimum: 0.0
+          title: After
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: fields
+        required: false
+        schema:
+          default: ""
+          title: Fields
+          type: string
+        style: form
+      - description: Use this parameter if you want to fetch the TransactionInput
+          previous outpoint details. Light fetches only the adress and amount. Full
+          fetches the whole TransactionOutput and adds it into each TxInput.
+        explode: true
+        in: query
+        name: resolve_previous_outpoints
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/endpoints__get_address_transactions__PreviousOutpointLookupMode'
+          default: "no"
+          description: Use this parameter if you want to fetch the TransactionInput
+            previous outpoint details. Light fetches only the adress and amount. Full
+            fetches the whole TransactionOutput and adds it into each TxInput.
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TxModel'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Full Transactions For Address Page
+      tags:
+      - Kaspa addresses
+  /addresses/balances:
+    post:
+      description: Get balance for a given kaspa address
+      operationId: get_balances_from_kaspa_addresses_addresses_balances_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BalanceRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BalancesByAddressEntry'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Balances From Kaspa Addresses
+      tags:
+      - Kaspa addresses
+  /info/blockreward:
+    get:
+      description: Returns the current blockreward in KAS/block
+      operationId: get_blockreward_info_blockreward_get
+      parameters:
+      - explode: true
+        in: query
+        name: stringOnly
+        required: false
+        schema:
+          default: false
+          title: Stringonly
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Get_Blockreward_Info_Blockreward_Get'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Blockreward
+      tags:
+      - Kaspa network info
+  /info/halving:
+    get:
+      description: Returns information about chromatic halving
+      operationId: get_halving_info_halving_get
+      parameters:
+      - explode: true
+        in: query
+        name: field
+        required: false
+        schema:
+          title: Field
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Get_Halving_Info_Halving_Get'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Halving
+      tags:
+      - Kaspa network info
+  /info/hashrate:
+    get:
+      description: Returns the current hashrate for Kaspa network in TH/s.
+      operationId: get_hashrate_info_hashrate_get
+      parameters:
+      - explode: true
+        in: query
+        name: stringOnly
+        required: false
+        schema:
+          default: false
+          title: Stringonly
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Get_Hashrate_Info_Hashrate_Get'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Hashrate
+      tags:
+      - Kaspa network info
+  /info/hashrate/max:
+    get:
+      description: Returns the current hashrate for Kaspa network in TH/s.
+      operationId: get_max_hashrate_info_hashrate_max_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaxHashrateResponse'
+          description: Successful Response
+      summary: Get Max Hashrate
+      tags:
+      - Kaspa network info
+  /info/health:
+    get:
+      description: |-
+        Checks node and database health by comparing blue score and sync status.
+        Returns health details or 503 if the database lags by ~10min or no nodes are synced.
+      operationId: health_state_info_health_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+          description: Successful Response
+      summary: Health State
+      tags:
+      - Kaspa network info
+  /info/marketcap:
+    get:
+      description: Get $KAS price and market cap. Price info is from coingecko.com
+      operationId: get_marketcap_info_marketcap_get
+      parameters:
+      - explode: true
+        in: query
+        name: stringOnly
+        required: false
+        schema:
+          default: false
+          title: Stringonly
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response_Get_Marketcap_Info_Marketcap_Get'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Marketcap
+      tags:
+      - Kaspa network info
+  /transactions:
+    post:
+      operationId: submit_a_new_transaction_transactions_post
+      parameters:
+      - description: Replace an existing transaction in the mempool
+        explode: true
+        in: query
+        name: replaceByFee
+        required: false
+        schema:
+          default: false
+          description: Replace an existing transaction in the mempool
+          title: Replacebyfee
+          type: boolean
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitTransactionRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitTransactionResponse'
+          description: Successful Response
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitTransactionResponse'
+          description: Bad Request
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Submit A New Transaction
+      tags:
+      - Kaspa transactions
+  /transactions/mass:
+    post:
+      description: |-
+        This function calculates and returns the mass of a transaction, which is essential for determining the minimum fee. The mass calculation takes into account the storage mass as defined in KIP-0009.
+
+        Note: Be aware that if the transaction has a very low output amount or a high number of outputs, the mass can become significantly large.
+      operationId: calculate_transaction_mass_transactions_mass_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitTxModel'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxMass'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Calculate Transaction Mass
+      tags:
+      - Kaspa transactions
+components:
+  schemas:
+    AddressName:
+      example:
+        address: address
+        name: name
+      properties:
+        address:
+          title: Address
+          type: string
+        name:
+          title: Name
+          type: string
+      required:
+      - address
+      - name
+      title: AddressName
+    AddressesActiveRequest:
+      example:
+        addresses:
+        - addresses
+        - addresses
+      properties:
+        addresses:
+          default:
+          - kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          items:
+            type: string
+          type: array
+      title: AddressesActiveRequest
+    BalanceRequest:
+      example:
+        addresses:
+        - addresses
+        - addresses
+      properties:
+        addresses:
+          default:
+          - kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          items:
+            type: string
+          type: array
+      title: BalanceRequest
+    BalanceResponse:
+      example:
+        address: kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+        balance: 0
+      properties:
+        address:
+          default: kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          title: Address
+          type: string
+        balance:
+          default: 38240000000
+          title: Balance
+          type: integer
+      title: BalanceResponse
+    BalancesByAddressEntry:
+      example:
+        address: kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+        balance: 0
+      properties:
+        address:
+          default: kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          title: Address
+          type: string
+        balance:
+          default: 12451591699
+          title: Balance
+          type: integer
+      title: BalancesByAddressEntry
+    BlockModel:
+      example:
+        extra:
+          minerAddress: minerAddress
+          minerInfo: minerInfo
+          color: color
+        header:
+          utxoCommitment: 236d5f9ffd19b317a97693322c3e2ae11a44b5df803d71f1ccf6c2393bc6143c
+          hashMerkleRoot: e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887
+          acceptedIdMerkleRoot: 9bab45b027a0b2b47135b6f6f866e5e4040fc1fdf2fe56eb0c90a603ce86092b
+          daaScore: "19984482"
+          pruningPoint: 5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d
+          bits: 6
+          blueWork: 2d1b3f04f8a0dcd31
+          blueScore: "18483232"
+          version: 0
+          nonce: "14797571275553019490"
+          timestamp: "1656450648874"
+          parents:
+          - parentHashes:
+            - parentHashes
+            - parentHashes
+          - parentHashes:
+            - parentHashes
+            - parentHashes
+        transactions:
+        - outputs:
+          - amount: 2
+            scriptPublicKey:
+              scriptPublicKey: scriptPublicKey
+              version: 7
+            verboseData:
+              scriptPublicKeyAddress: scriptPublicKeyAddress
+              scriptPublicKeyType: scriptPublicKeyType
+          - amount: 2
+            scriptPublicKey:
+              scriptPublicKey: scriptPublicKey
+              version: 7
+            verboseData:
+              scriptPublicKeyAddress: scriptPublicKeyAddress
+              scriptPublicKeyType: scriptPublicKeyType
+          payload: payload
+          lockTime: 2
+          inputs:
+          - sequence: 5
+            signatureScript: signatureScript
+            sigOpCount: 5
+            previousOutpoint:
+              index: 1
+              transactionId: transactionId
+          - sequence: 5
+            signatureScript: signatureScript
+            sigOpCount: 5
+            previousOutpoint:
+              index: 1
+              transactionId: transactionId
+          mass: 7
+          gas: 4
+          subnetworkId: subnetworkId
+          verboseData:
+            blockHash: blockHash
+            computeMass: 9
+            blockTime: 3
+            transactionId: transactionId
+            hash: hash
+          version: 1
+        - outputs:
+          - amount: 2
+            scriptPublicKey:
+              scriptPublicKey: scriptPublicKey
+              version: 7
+            verboseData:
+              scriptPublicKeyAddress: scriptPublicKeyAddress
+              scriptPublicKeyType: scriptPublicKeyType
+          - amount: 2
+            scriptPublicKey:
+              scriptPublicKey: scriptPublicKey
+              version: 7
+            verboseData:
+              scriptPublicKeyAddress: scriptPublicKeyAddress
+              scriptPublicKeyType: scriptPublicKeyType
+          payload: payload
+          lockTime: 2
+          inputs:
+          - sequence: 5
+            signatureScript: signatureScript
+            sigOpCount: 5
+            previousOutpoint:
+              index: 1
+              transactionId: transactionId
+          - sequence: 5
+            signatureScript: signatureScript
+            sigOpCount: 5
+            previousOutpoint:
+              index: 1
+              transactionId: transactionId
+          mass: 7
+          gas: 4
+          subnetworkId: subnetworkId
+          verboseData:
+            blockHash: blockHash
+            computeMass: 9
+            blockTime: 3
+            transactionId: transactionId
+            hash: hash
+          version: 1
+        verboseData:
+          difficulty: 1.0246457001441578
+          transactionIds:
+          - transactionIds
+          - transactionIds
+          childrenHashes:
+          - childrenHashes
+          - childrenHashes
+          mergeSetBluesHashes:
+          - mergeSetBluesHashes
+          - mergeSetBluesHashes
+          mergeSetRedsHashes:
+          - mergeSetRedsHashes
+          - mergeSetRedsHashes
+          blueScore: "18483232"
+          selectedParentHash: 580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e
+          hash: 18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699
+          isChainBlock: false
+      properties:
+        header:
+          $ref: '#/components/schemas/endpoints__get_blocks__BlockHeader'
+        transactions:
+          items:
+            $ref: '#/components/schemas/BlockTxModel'
+          type: array
+        verboseData:
+          $ref: '#/components/schemas/VerboseDataModel'
+        extra:
+          $ref: '#/components/schemas/ExtraModel'
+      required:
+      - header
+      - verboseData
+      title: BlockModel
+    BlockResponse:
+      example:
+        blockHashes:
+        - blockHashes
+        - blockHashes
+        blocks:
+        - extra:
+            minerAddress: minerAddress
+            minerInfo: minerInfo
+            color: color
+          header:
+            utxoCommitment: 236d5f9ffd19b317a97693322c3e2ae11a44b5df803d71f1ccf6c2393bc6143c
+            hashMerkleRoot: e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887
+            acceptedIdMerkleRoot: 9bab45b027a0b2b47135b6f6f866e5e4040fc1fdf2fe56eb0c90a603ce86092b
+            daaScore: "19984482"
+            pruningPoint: 5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d
+            bits: 6
+            blueWork: 2d1b3f04f8a0dcd31
+            blueScore: "18483232"
+            version: 0
+            nonce: "14797571275553019490"
+            timestamp: "1656450648874"
+            parents:
+            - parentHashes:
+              - parentHashes
+              - parentHashes
+            - parentHashes:
+              - parentHashes
+              - parentHashes
+          transactions:
+          - outputs:
+            - amount: 2
+              scriptPublicKey:
+                scriptPublicKey: scriptPublicKey
+                version: 7
+              verboseData:
+                scriptPublicKeyAddress: scriptPublicKeyAddress
+                scriptPublicKeyType: scriptPublicKeyType
+            - amount: 2
+              scriptPublicKey:
+                scriptPublicKey: scriptPublicKey
+                version: 7
+              verboseData:
+                scriptPublicKeyAddress: scriptPublicKeyAddress
+                scriptPublicKeyType: scriptPublicKeyType
+            payload: payload
+            lockTime: 2
+            inputs:
+            - sequence: 5
+              signatureScript: signatureScript
+              sigOpCount: 5
+              previousOutpoint:
+                index: 1
+                transactionId: transactionId
+            - sequence: 5
+              signatureScript: signatureScript
+              sigOpCount: 5
+              previousOutpoint:
+                index: 1
+                transactionId: transactionId
+            mass: 7
+            gas: 4
+            subnetworkId: subnetworkId
+            verboseData:
+              blockHash: blockHash
+              computeMass: 9
+              blockTime: 3
+              transactionId: transactionId
+              hash: hash
+            version: 1
+          - outputs:
+            - amount: 2
+              scriptPublicKey:
+                scriptPublicKey: scriptPublicKey
+                version: 7
+              verboseData:
+                scriptPublicKeyAddress: scriptPublicKeyAddress
+                scriptPublicKeyType: scriptPublicKeyType
+            - amount: 2
+              scriptPublicKey:
+                scriptPublicKey: scriptPublicKey
+                version: 7
+              verboseData:
+                scriptPublicKeyAddress: scriptPublicKeyAddress
+                scriptPublicKeyType: scriptPublicKeyType
+            payload: payload
+            lockTime: 2
+            inputs:
+            - sequence: 5
+              signatureScript: signatureScript
+              sigOpCount: 5
+              previousOutpoint:
+                index: 1
+                transactionId: transactionId
+            - sequence: 5
+              signatureScript: signatureScript
+              sigOpCount: 5
+              previousOutpoint:
+                index: 1
+                transactionId: transactionId
+            mass: 7
+            gas: 4
+            subnetworkId: subnetworkId
+            verboseData:
+              blockHash: blockHash
+              computeMass: 9
+              blockTime: 3
+              transactionId: transactionId
+              hash: hash
+            version: 1
+          verboseData:
+            difficulty: 1.0246457001441578
+            transactionIds:
+            - transactionIds
+            - transactionIds
+            childrenHashes:
+            - childrenHashes
+            - childrenHashes
+            mergeSetBluesHashes:
+            - mergeSetBluesHashes
+            - mergeSetBluesHashes
+            mergeSetRedsHashes:
+            - mergeSetRedsHashes
+            - mergeSetRedsHashes
+            blueScore: "18483232"
+            selectedParentHash: 580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e
+            hash: 18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699
+            isChainBlock: false
+        - extra:
+            minerAddress: minerAddress
+            minerInfo: minerInfo
+            color: color
+          header:
+            utxoCommitment: 236d5f9ffd19b317a97693322c3e2ae11a44b5df803d71f1ccf6c2393bc6143c
+            hashMerkleRoot: e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887
+            acceptedIdMerkleRoot: 9bab45b027a0b2b47135b6f6f866e5e4040fc1fdf2fe56eb0c90a603ce86092b
+            daaScore: "19984482"
+            pruningPoint: 5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d
+            bits: 6
+            blueWork: 2d1b3f04f8a0dcd31
+            blueScore: "18483232"
+            version: 0
+            nonce: "14797571275553019490"
+            timestamp: "1656450648874"
+            parents:
+            - parentHashes:
+              - parentHashes
+              - parentHashes
+            - parentHashes:
+              - parentHashes
+              - parentHashes
+          transactions:
+          - outputs:
+            - amount: 2
+              scriptPublicKey:
+                scriptPublicKey: scriptPublicKey
+                version: 7
+              verboseData:
+                scriptPublicKeyAddress: scriptPublicKeyAddress
+                scriptPublicKeyType: scriptPublicKeyType
+            - amount: 2
+              scriptPublicKey:
+                scriptPublicKey: scriptPublicKey
+                version: 7
+              verboseData:
+                scriptPublicKeyAddress: scriptPublicKeyAddress
+                scriptPublicKeyType: scriptPublicKeyType
+            payload: payload
+            lockTime: 2
+            inputs:
+            - sequence: 5
+              signatureScript: signatureScript
+              sigOpCount: 5
+              previousOutpoint:
+                index: 1
+                transactionId: transactionId
+            - sequence: 5
+              signatureScript: signatureScript
+              sigOpCount: 5
+              previousOutpoint:
+                index: 1
+                transactionId: transactionId
+            mass: 7
+            gas: 4
+            subnetworkId: subnetworkId
+            verboseData:
+              blockHash: blockHash
+              computeMass: 9
+              blockTime: 3
+              transactionId: transactionId
+              hash: hash
+            version: 1
+          - outputs:
+            - amount: 2
+              scriptPublicKey:
+                scriptPublicKey: scriptPublicKey
+                version: 7
+              verboseData:
+                scriptPublicKeyAddress: scriptPublicKeyAddress
+                scriptPublicKeyType: scriptPublicKeyType
+            - amount: 2
+              scriptPublicKey:
+                scriptPublicKey: scriptPublicKey
+                version: 7
+              verboseData:
+                scriptPublicKeyAddress: scriptPublicKeyAddress
+                scriptPublicKeyType: scriptPublicKeyType
+            payload: payload
+            lockTime: 2
+            inputs:
+            - sequence: 5
+              signatureScript: signatureScript
+              sigOpCount: 5
+              previousOutpoint:
+                index: 1
+                transactionId: transactionId
+            - sequence: 5
+              signatureScript: signatureScript
+              sigOpCount: 5
+              previousOutpoint:
+                index: 1
+                transactionId: transactionId
+            mass: 7
+            gas: 4
+            subnetworkId: subnetworkId
+            verboseData:
+              blockHash: blockHash
+              computeMass: 9
+              blockTime: 3
+              transactionId: transactionId
+              hash: hash
+            version: 1
+          verboseData:
+            difficulty: 1.0246457001441578
+            transactionIds:
+            - transactionIds
+            - transactionIds
+            childrenHashes:
+            - childrenHashes
+            - childrenHashes
+            mergeSetBluesHashes:
+            - mergeSetBluesHashes
+            - mergeSetBluesHashes
+            mergeSetRedsHashes:
+            - mergeSetRedsHashes
+            - mergeSetRedsHashes
+            blueScore: "18483232"
+            selectedParentHash: 580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e
+            hash: 18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699
+            isChainBlock: false
+      properties:
+        blockHashes:
+          default:
+          - 44edf9bfd32aa154bfad64485882f184372b64bd60565ba121b42fc3cb1238f3
+          - 18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699
+          - 9a822351cd293a653f6721afec1646bd1690da7124b5fbe87001711406010604
+          - 2fda0dad4ec879b4ad02ebb68c757955cab305558998129a7de111ab852e7dcb
+          items:
+            type: string
+          type: array
+        blocks:
+          items:
+            $ref: '#/components/schemas/BlockModel'
+          type: array
+      title: BlockResponse
+    BlockRewardResponse:
+      example:
+        blockreward: 0.8008281904610115
+      properties:
+        blockreward:
+          default: 12000132
+          title: Blockreward
+          type: number
+      title: BlockRewardResponse
+    BlockTxInputModel:
+      example:
+        sequence: 5
+        signatureScript: signatureScript
+        sigOpCount: 5
+        previousOutpoint:
+          index: 1
+          transactionId: transactionId
+      properties:
+        previousOutpoint:
+          $ref: '#/components/schemas/BlockTxInputPreviousOutpointModel'
+        signatureScript:
+          title: Signaturescript
+          type: string
+        sigOpCount:
+          title: Sigopcount
+          type: integer
+        sequence:
+          title: Sequence
+          type: integer
+      title: BlockTxInputModel
+    BlockTxInputPreviousOutpointModel:
+      example:
+        index: 1
+        transactionId: transactionId
+      properties:
+        transactionId:
+          title: Transactionid
+          type: string
+        index:
+          title: Index
+          type: integer
+      required:
+      - index
+      - transactionId
+      title: BlockTxInputPreviousOutpointModel
+    BlockTxModel:
+      example:
+        outputs:
+        - amount: 2
+          scriptPublicKey:
+            scriptPublicKey: scriptPublicKey
+            version: 7
+          verboseData:
+            scriptPublicKeyAddress: scriptPublicKeyAddress
+            scriptPublicKeyType: scriptPublicKeyType
+        - amount: 2
+          scriptPublicKey:
+            scriptPublicKey: scriptPublicKey
+            version: 7
+          verboseData:
+            scriptPublicKeyAddress: scriptPublicKeyAddress
+            scriptPublicKeyType: scriptPublicKeyType
+        payload: payload
+        lockTime: 2
+        inputs:
+        - sequence: 5
+          signatureScript: signatureScript
+          sigOpCount: 5
+          previousOutpoint:
+            index: 1
+            transactionId: transactionId
+        - sequence: 5
+          signatureScript: signatureScript
+          sigOpCount: 5
+          previousOutpoint:
+            index: 1
+            transactionId: transactionId
+        mass: 7
+        gas: 4
+        subnetworkId: subnetworkId
+        verboseData:
+          blockHash: blockHash
+          computeMass: 9
+          blockTime: 3
+          transactionId: transactionId
+          hash: hash
+        version: 1
+      properties:
+        inputs:
+          items:
+            $ref: '#/components/schemas/BlockTxInputModel'
+          type: array
+        outputs:
+          items:
+            $ref: '#/components/schemas/BlockTxOutputModel'
+          type: array
+        subnetworkId:
+          title: Subnetworkid
+          type: string
+        payload:
+          title: Payload
+          type: string
+        verboseData:
+          $ref: '#/components/schemas/BlockTxVerboseDataModel'
+        lockTime:
+          title: Locktime
+          type: integer
+        gas:
+          title: Gas
+          type: integer
+        mass:
+          title: Mass
+          type: integer
+        version:
+          title: Version
+          type: integer
+      required:
+      - verboseData
+      title: BlockTxModel
+    BlockTxOutputModel:
+      example:
+        amount: 2
+        scriptPublicKey:
+          scriptPublicKey: scriptPublicKey
+          version: 7
+        verboseData:
+          scriptPublicKeyAddress: scriptPublicKeyAddress
+          scriptPublicKeyType: scriptPublicKeyType
+      properties:
+        amount:
+          title: Amount
+          type: integer
+        scriptPublicKey:
+          $ref: '#/components/schemas/BlockTxOutputScriptPublicKeyModel'
+        verboseData:
+          $ref: '#/components/schemas/BlockTxOutputVerboseDataModel'
+      title: BlockTxOutputModel
+    BlockTxOutputScriptPublicKeyModel:
+      example:
+        scriptPublicKey: scriptPublicKey
+        version: 7
+      properties:
+        scriptPublicKey:
+          title: Scriptpublickey
+          type: string
+        version:
+          title: Version
+          type: integer
+      title: BlockTxOutputScriptPublicKeyModel
+    BlockTxOutputVerboseDataModel:
+      example:
+        scriptPublicKeyAddress: scriptPublicKeyAddress
+        scriptPublicKeyType: scriptPublicKeyType
+      properties:
+        scriptPublicKeyType:
+          title: Scriptpublickeytype
+          type: string
+        scriptPublicKeyAddress:
+          title: Scriptpublickeyaddress
+          type: string
+      title: BlockTxOutputVerboseDataModel
+    BlockTxVerboseDataModel:
+      example:
+        blockHash: blockHash
+        computeMass: 9
+        blockTime: 3
+        transactionId: transactionId
+        hash: hash
+      properties:
+        transactionId:
+          title: Transactionid
+          type: string
+        hash:
+          title: Hash
+          type: string
+        computeMass:
+          title: Computemass
+          type: integer
+        blockHash:
+          title: Blockhash
+          type: string
+        blockTime:
+          title: Blocktime
+          type: integer
+      required:
+      - transactionId
+      title: BlockTxVerboseDataModel
+    CoinSupplyResponse:
+      example:
+        maxSupply: "2900000000000000000"
+        circulatingSupply: "1000900697580640180"
+      properties:
+        circulatingSupply:
+          default: "1000900697580640180"
+          title: Circulatingsupply
+          type: string
+        maxSupply:
+          default: "2900000000000000000"
+          title: Maxsupply
+          type: string
+      title: CoinSupplyResponse
+    DBCheckStatus:
+      example:
+        isSynced: true
+        blueScoreDiff: 1
+        acceptedTxBlockTimeDiff: 5
+        acceptedTxBlockTime: 5
+        blueScore: 6
+      properties:
+        isSynced:
+          default: true
+          title: Issynced
+          type: boolean
+        blueScore:
+          title: Bluescore
+          type: integer
+        blueScoreDiff:
+          title: Bluescorediff
+          type: integer
+        acceptedTxBlockTime:
+          title: Acceptedtxblocktime
+          type: integer
+        acceptedTxBlockTimeDiff:
+          title: Acceptedtxblocktimediff
+          type: integer
+      title: DBCheckStatus
+    ExtraModel:
+      example:
+        minerAddress: minerAddress
+        minerInfo: minerInfo
+        color: color
+      properties:
+        color:
+          title: Color
+          type: string
+        minerAddress:
+          title: Mineraddress
+          type: string
+        minerInfo:
+          title: Minerinfo
+          type: string
+      title: ExtraModel
+    FeeEstimateBucket:
+      example:
+        estimatedSeconds: 6.027456183070403
+        feerate: 0
+      properties:
+        feerate:
+          default: 1
+          title: Feerate
+          type: integer
+        estimatedSeconds:
+          default: 0.004
+          title: Estimatedseconds
+          type: number
+      title: FeeEstimateBucket
+    FeeEstimateResponse:
+      example:
+        normalBuckets:
+        - estimatedSeconds: 6.027456183070403
+          feerate: 0
+        - estimatedSeconds: 6.027456183070403
+          feerate: 0
+        priorityBucket:
+          estimatedSeconds: 6.027456183070403
+          feerate: 0
+        lowBuckets:
+        - estimatedSeconds: 6.027456183070403
+          feerate: 0
+        - estimatedSeconds: 6.027456183070403
+          feerate: 0
+      properties:
+        priorityBucket:
+          $ref: '#/components/schemas/FeeEstimateBucket'
+        normalBuckets:
+          items:
+            $ref: '#/components/schemas/FeeEstimateBucket'
+          type: array
+        lowBuckets:
+          items:
+            $ref: '#/components/schemas/FeeEstimateBucket'
+          type: array
+      required:
+      - lowBuckets
+      - normalBuckets
+      - priorityBucket
+      title: FeeEstimateResponse
+    HTTPValidationError:
+      example:
+        detail:
+        - msg: msg
+          loc:
+          - ValidationError_loc_inner
+          - ValidationError_loc_inner
+          type: type
+        - msg: msg
+          loc:
+          - ValidationError_loc_inner
+          - ValidationError_loc_inner
+          type: type
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      title: HTTPValidationError
+    HalvingResponse:
+      example:
+        nextHalvingAmount: 6.027456183070403
+        nextHalvingDate: 2022-09-10 19:38:52 UTC
+        nextHalvingTimestamp: 0
+      properties:
+        nextHalvingTimestamp:
+          default: 1662837270000
+          title: Nexthalvingtimestamp
+          type: integer
+        nextHalvingDate:
+          default: 2022-09-10 19:38:52 UTC
+          title: Nexthalvingdate
+          type: string
+        nextHalvingAmount:
+          default: 155.123123
+          title: Nexthalvingamount
+          type: number
+      title: HalvingResponse
+    HashrateResponse:
+      example:
+        hashrate: 0.8008281904610115
+      properties:
+        hashrate:
+          default: 12000132
+          title: Hashrate
+          type: number
+      title: HashrateResponse
+    HealthResponse:
+      example:
+        database:
+          isSynced: true
+          blueScoreDiff: 1
+          acceptedTxBlockTimeDiff: 5
+          acceptedTxBlockTime: 5
+          blueScore: 6
+        kaspadServers:
+        - serverVersion: 0.12.6
+          isSynced: true
+          kaspadHost: ""
+          isUtxoIndexed: true
+          p2pId: "1231312"
+          blueScore: 0
+        - serverVersion: 0.12.6
+          isSynced: true
+          kaspadHost: ""
+          isUtxoIndexed: true
+          p2pId: "1231312"
+          blueScore: 0
+      properties:
+        kaspadServers:
+          items:
+            $ref: '#/components/schemas/KaspadResponse'
+          type: array
+        database:
+          $ref: '#/components/schemas/DBCheckStatus'
+      required:
+      - database
+      - kaspadServers
+      title: HealthResponse
+    KaspadInfoResponse:
+      example:
+        serverVersion: 0.12.2
+        isSynced: true
+        p2pIdHashed: 36a17cd8644eef34fc7fe4719655e06dbdf117008900c46975e66c35acd09b01
+        mempoolSize: "1"
+        isUtxoIndexed: true
+      properties:
+        mempoolSize:
+          default: "1"
+          title: Mempoolsize
+          type: string
+        serverVersion:
+          default: 0.12.2
+          title: Serverversion
+          type: string
+        isUtxoIndexed:
+          default: true
+          title: Isutxoindexed
+          type: boolean
+        isSynced:
+          default: true
+          title: Issynced
+          type: boolean
+        p2pIdHashed:
+          default: 36a17cd8644eef34fc7fe4719655e06dbdf117008900c46975e66c35acd09b01
+          title: P2Pidhashed
+          type: string
+      title: KaspadInfoResponse
+    KaspadResponse:
+      example:
+        serverVersion: 0.12.6
+        isSynced: true
+        kaspadHost: ""
+        isUtxoIndexed: true
+        p2pId: "1231312"
+        blueScore: 0
+      properties:
+        kaspadHost:
+          default: ""
+          title: Kaspadhost
+          type: string
+        serverVersion:
+          default: 0.12.6
+          title: Serverversion
+          type: string
+        isUtxoIndexed:
+          default: true
+          title: Isutxoindexed
+          type: boolean
+        isSynced:
+          default: true
+          title: Issynced
+          type: boolean
+        p2pId:
+          default: "1231312"
+          title: P2Pid
+          type: string
+        blueScore:
+          default: 101065625
+          title: Bluescore
+          type: integer
+      title: KaspadResponse
+    MarketCapResponse:
+      example:
+        marketcap: 0
+      properties:
+        marketcap:
+          default: 12000132
+          title: Marketcap
+          type: integer
+      title: MarketCapResponse
+    MaxHashrateResponse:
+      example:
+        blockheader:
+          difficulty: 6
+          daaScore: "19984482"
+          blueScore: "18483232"
+          hash: e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887
+          timestamp: "1656450648874"
+        hashrate: 0.8008281904610115
+      properties:
+        hashrate:
+          default: 12000132
+          title: Hashrate
+          type: number
+        blockheader:
+          $ref: '#/components/schemas/endpoints__get_hashrate__BlockHeader'
+      required:
+      - blockheader
+      title: MaxHashrateResponse
+    NetworkResponse:
+      example:
+        blockCount: "261357"
+        difficulty: 0.8008281904610115
+        virtualParentHashes:
+        - virtualParentHashes
+        - virtualParentHashes
+        virtualDaaScore: "19989984"
+        tipHashes:
+        - tipHashes
+        - tipHashes
+        networkName: kaspa-mainnet
+        headerCount: "23138783"
+        pastMedianTime: "1656456088196"
+        pruningPointHash: 5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d
+      properties:
+        networkName:
+          default: kaspa-mainnet
+          title: Networkname
+          type: string
+        blockCount:
+          default: "261357"
+          title: Blockcount
+          type: string
+        headerCount:
+          default: "23138783"
+          title: Headercount
+          type: string
+        tipHashes:
+          default:
+          - efdbe104c6275cf881583fba77834c8528fd1ab059f6b4737c42564d0d9fedbc
+          - 6affbe62baef0f1a562f166b9857844b03b51a8ec9b8417ceb308d53fdc239a2
+          items:
+            type: string
+          type: array
+        difficulty:
+          default: 3.88707990501409E12
+          title: Difficulty
+          type: number
+        pastMedianTime:
+          default: "1656456088196"
+          title: Pastmediantime
+          type: string
+        virtualParentHashes:
+          default:
+          - 6affbe62baef0f1a562f166b9857844b03b51a8ec9b8417ceb308d53fdc239a2
+          - efdbe104c6275cf881583fba77834c8528fd1ab059f6b4737c42564d0d9fedbc
+          items:
+            type: string
+          type: array
+        pruningPointHash:
+          default: 5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d
+          title: Pruningpointhash
+          type: string
+        virtualDaaScore:
+          default: "19989984"
+          title: Virtualdaascore
+          type: string
+      title: NetworkResponse
+    OutpointModel:
+      example:
+        index: 0
+        transactionId: ef62efbc2825d3ef9ec1cf9b80506876ac077b64b11a39c8ef5e028415444dc9
+      properties:
+        transactionId:
+          default: ef62efbc2825d3ef9ec1cf9b80506876ac077b64b11a39c8ef5e028415444dc9
+          title: Transactionid
+          type: string
+        index:
+          default: 0
+          title: Index
+          type: integer
+      title: OutpointModel
+    ParentHashModel:
+      example:
+        parentHashes:
+        - parentHashes
+        - parentHashes
+      properties:
+        parentHashes:
+          default:
+          - 580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e
+          items:
+            type: string
+          type: array
+      title: ParentHashModel
+    PriceResponse:
+      example:
+        price: 0.8008281904610115
+      properties:
+        price:
+          default: 0.025235
+          title: Price
+          type: number
+      title: PriceResponse
+    ScriptPublicKeyModel:
+      example:
+        scriptPublicKey: 20c5629ce85f6618cd3ed1ac1c99dc6d3064ed244013555c51385d9efab0d0072fac
+      properties:
+        scriptPublicKey:
+          default: 20c5629ce85f6618cd3ed1ac1c99dc6d3064ed244013555c51385d9efab0d0072fac
+          title: Scriptpublickey
+          type: string
+      title: ScriptPublicKeyModel
+    SubmitTransactionRequest:
+      example:
+        allowOrphan: false
+        transaction:
+          outputs:
+          - amount: 5
+            scriptPublicKey:
+              scriptPublicKey: scriptPublicKey
+              version: 2
+          - amount: 5
+            scriptPublicKey:
+              scriptPublicKey: scriptPublicKey
+              version: 2
+          lockTime: 7
+          inputs:
+          - sequence: 1
+            signatureScript: signatureScript
+            sigOpCount: 5
+            previousOutpoint:
+              index: 6
+              transactionId: transactionId
+          - sequence: 1
+            signatureScript: signatureScript
+            sigOpCount: 5
+            previousOutpoint:
+              index: 6
+              transactionId: transactionId
+          subnetworkId: subnetworkId
+          version: 0
+      properties:
+        transaction:
+          $ref: '#/components/schemas/SubmitTxModel'
+        allowOrphan:
+          default: false
+          title: Alloworphan
+          type: boolean
+      required:
+      - transaction
+      title: SubmitTransactionRequest
+    SubmitTransactionResponse:
+      example:
+        error: error
+        transactionId: transactionId
+      properties:
+        transactionId:
+          title: Transactionid
+          type: string
+        error:
+          title: Error
+          type: string
+      title: SubmitTransactionResponse
+    SubmitTxInput:
+      example:
+        sequence: 1
+        signatureScript: signatureScript
+        sigOpCount: 5
+        previousOutpoint:
+          index: 6
+          transactionId: transactionId
+      properties:
+        previousOutpoint:
+          $ref: '#/components/schemas/SubmitTxOutpoint'
+        signatureScript:
+          title: Signaturescript
+          type: string
+        sequence:
+          title: Sequence
+          type: integer
+        sigOpCount:
+          title: Sigopcount
+          type: integer
+      required:
+      - previousOutpoint
+      - sequence
+      - sigOpCount
+      - signatureScript
+      title: SubmitTxInput
+    SubmitTxModel:
+      example:
+        outputs:
+        - amount: 5
+          scriptPublicKey:
+            scriptPublicKey: scriptPublicKey
+            version: 2
+        - amount: 5
+          scriptPublicKey:
+            scriptPublicKey: scriptPublicKey
+            version: 2
+        lockTime: 7
+        inputs:
+        - sequence: 1
+          signatureScript: signatureScript
+          sigOpCount: 5
+          previousOutpoint:
+            index: 6
+            transactionId: transactionId
+        - sequence: 1
+          signatureScript: signatureScript
+          sigOpCount: 5
+          previousOutpoint:
+            index: 6
+            transactionId: transactionId
+        subnetworkId: subnetworkId
+        version: 0
+      properties:
+        version:
+          title: Version
+          type: integer
+        inputs:
+          items:
+            $ref: '#/components/schemas/SubmitTxInput'
+          type: array
+        outputs:
+          items:
+            $ref: '#/components/schemas/SubmitTxOutput'
+          type: array
+        lockTime:
+          default: 0
+          title: Locktime
+          type: integer
+        subnetworkId:
+          title: Subnetworkid
+          type: string
+      required:
+      - inputs
+      - outputs
+      - version
+      title: SubmitTxModel
+    SubmitTxOutpoint:
+      example:
+        index: 6
+        transactionId: transactionId
+      properties:
+        transactionId:
+          title: Transactionid
+          type: string
+        index:
+          title: Index
+          type: integer
+      required:
+      - index
+      - transactionId
+      title: SubmitTxOutpoint
+    SubmitTxOutput:
+      example:
+        amount: 5
+        scriptPublicKey:
+          scriptPublicKey: scriptPublicKey
+          version: 2
+      properties:
+        amount:
+          title: Amount
+          type: integer
+        scriptPublicKey:
+          $ref: '#/components/schemas/SubmitTxScriptPublicKey'
+      required:
+      - amount
+      - scriptPublicKey
+      title: SubmitTxOutput
+    SubmitTxScriptPublicKey:
+      example:
+        scriptPublicKey: scriptPublicKey
+        version: 2
+      properties:
+        version:
+          title: Version
+          type: integer
+        scriptPublicKey:
+          title: Scriptpublickey
+          type: string
+      required:
+      - scriptPublicKey
+      - version
+      title: SubmitTxScriptPublicKey
+    TransactionCount:
+      example:
+        total: 0
+        limit_exceeded: true
+      properties:
+        total:
+          title: Total
+          type: integer
+        limit_exceeded:
+          title: Limit Exceeded
+          type: boolean
+      required:
+      - limit_exceeded
+      - total
+      title: TransactionCount
+    TxIdResponse:
+      example:
+        address: address
+        active: true
+      properties:
+        address:
+          title: Address
+          type: string
+        active:
+          title: Active
+          type: boolean
+      required:
+      - active
+      - address
+      title: TxIdResponse
+    TxInput:
+      example:
+        transaction_id: transaction_id
+        previous_outpoint_resolved:
+          transaction_id: transaction_id
+          script_public_key: script_public_key
+          amount: 7
+          script_public_key_type: script_public_key_type
+          script_public_key_address: script_public_key_address
+          index: 2
+          accepting_block_hash: accepting_block_hash
+        sig_op_count: 3
+        previous_outpoint_index: previous_outpoint_index
+        signature_script: signature_script
+        previous_outpoint_address: previous_outpoint_address
+        index: 5
+        previous_outpoint_amount: 9
+        previous_outpoint_hash: previous_outpoint_hash
+      properties:
+        transaction_id:
+          title: Transaction Id
+          type: string
+        index:
+          title: Index
+          type: integer
+        previous_outpoint_hash:
+          title: Previous Outpoint Hash
+          type: string
+        previous_outpoint_index:
+          title: Previous Outpoint Index
+          type: string
+        previous_outpoint_resolved:
+          $ref: '#/components/schemas/TxOutput'
+        previous_outpoint_address:
+          title: Previous Outpoint Address
+          type: string
+        previous_outpoint_amount:
+          title: Previous Outpoint Amount
+          type: integer
+        signature_script:
+          title: Signature Script
+          type: string
+        sig_op_count:
+          title: Sig Op Count
+          type: integer
+      required:
+      - index
+      - previous_outpoint_hash
+      - previous_outpoint_index
+      - transaction_id
+      title: TxInput
+    TxMass:
+      example:
+        storage_mass: 6
+        mass: 0
+        compute_mass: 1
+      properties:
+        mass:
+          title: Mass
+          type: integer
+        storage_mass:
+          title: Storage Mass
+          type: integer
+        compute_mass:
+          title: Compute Mass
+          type: integer
+      required:
+      - compute_mass
+      - mass
+      - storage_mass
+      title: TxMass
+    TxModel:
+      example:
+        transaction_id: transaction_id
+        outputs:
+        - transaction_id: transaction_id
+          script_public_key: script_public_key
+          amount: 7
+          script_public_key_type: script_public_key_type
+          script_public_key_address: script_public_key_address
+          index: 2
+          accepting_block_hash: accepting_block_hash
+        - transaction_id: transaction_id
+          script_public_key: script_public_key
+          amount: 7
+          script_public_key_type: script_public_key_type
+          script_public_key_address: script_public_key_address
+          index: 2
+          accepting_block_hash: accepting_block_hash
+        is_accepted: true
+        inputs:
+        - transaction_id: transaction_id
+          previous_outpoint_resolved:
+            transaction_id: transaction_id
+            script_public_key: script_public_key
+            amount: 7
+            script_public_key_type: script_public_key_type
+            script_public_key_address: script_public_key_address
+            index: 2
+            accepting_block_hash: accepting_block_hash
+          sig_op_count: 3
+          previous_outpoint_index: previous_outpoint_index
+          signature_script: signature_script
+          previous_outpoint_address: previous_outpoint_address
+          index: 5
+          previous_outpoint_amount: 9
+          previous_outpoint_hash: previous_outpoint_hash
+        - transaction_id: transaction_id
+          previous_outpoint_resolved:
+            transaction_id: transaction_id
+            script_public_key: script_public_key
+            amount: 7
+            script_public_key_type: script_public_key_type
+            script_public_key_address: script_public_key_address
+            index: 2
+            accepting_block_hash: accepting_block_hash
+          sig_op_count: 3
+          previous_outpoint_index: previous_outpoint_index
+          signature_script: signature_script
+          previous_outpoint_address: previous_outpoint_address
+          index: 5
+          previous_outpoint_amount: 9
+          previous_outpoint_hash: previous_outpoint_hash
+        mass: 0
+        block_hash:
+        - block_hash
+        - block_hash
+        accepting_block_time: 5
+        accepting_block_hash: accepting_block_hash
+        accepting_block_blue_score: 1
+        block_time: 6
+        payload: payload
+        subnetwork_id: subnetwork_id
+        hash: hash
+      properties:
+        subnetwork_id:
+          title: Subnetwork Id
+          type: string
+        transaction_id:
+          title: Transaction Id
+          type: string
+        hash:
+          title: Hash
+          type: string
+        mass:
+          title: Mass
+          type: integer
+        payload:
+          title: Payload
+          type: string
+        block_hash:
+          items:
+            type: string
+          type: array
+        block_time:
+          title: Block Time
+          type: integer
+        is_accepted:
+          title: Is Accepted
+          type: boolean
+        accepting_block_hash:
+          title: Accepting Block Hash
+          type: string
+        accepting_block_blue_score:
+          title: Accepting Block Blue Score
+          type: integer
+        accepting_block_time:
+          title: Accepting Block Time
+          type: integer
+        inputs:
+          items:
+            $ref: '#/components/schemas/TxInput'
+          type: array
+        outputs:
+          items:
+            $ref: '#/components/schemas/TxOutput'
+          type: array
+      title: TxModel
+    TxOutput:
+      example:
+        transaction_id: transaction_id
+        script_public_key: script_public_key
+        amount: 7
+        script_public_key_type: script_public_key_type
+        script_public_key_address: script_public_key_address
+        index: 2
+        accepting_block_hash: accepting_block_hash
+      properties:
+        transaction_id:
+          title: Transaction Id
+          type: string
+        index:
+          title: Index
+          type: integer
+        amount:
+          title: Amount
+          type: integer
+        script_public_key:
+          title: Script Public Key
+          type: string
+        script_public_key_address:
+          title: Script Public Key Address
+          type: string
+        script_public_key_type:
+          title: Script Public Key Type
+          type: string
+        accepting_block_hash:
+          title: Accepting Block Hash
+          type: string
+      required:
+      - amount
+      - index
+      - transaction_id
+      title: TxOutput
+    TxSearch:
+      example:
+        transactionIds:
+        - transactionIds
+        - transactionIds
+        acceptingBlueScores:
+          lt: 6
+          gte: 0
+      properties:
+        transactionIds:
+          items:
+            type: string
+          type: array
+        acceptingBlueScores:
+          $ref: '#/components/schemas/TxSearchAcceptingBlueScores'
+      title: TxSearch
+    TxSearchAcceptingBlueScores:
+      example:
+        lt: 6
+        gte: 0
+      properties:
+        gte:
+          title: Gte
+          type: integer
+        lt:
+          title: Lt
+          type: integer
+      required:
+      - gte
+      - lt
+      title: TxSearchAcceptingBlueScores
+    UtxoModel:
+      example:
+        amount: "[11501593788]"
+        isCoinbase: false
+        scriptPublicKey:
+          scriptPublicKey: 20c5629ce85f6618cd3ed1ac1c99dc6d3064ed244013555c51385d9efab0d0072fac
+        blockDaaScore: "18867232"
+      properties:
+        amount:
+          default:
+          - "11501593788"
+          title: Amount
+          type: string
+        scriptPublicKey:
+          $ref: '#/components/schemas/ScriptPublicKeyModel'
+        blockDaaScore:
+          default: "18867232"
+          title: Blockdaascore
+          type: string
+        isCoinbase:
+          default: false
+          title: Iscoinbase
+          type: boolean
+      required:
+      - scriptPublicKey
+      title: UtxoModel
+    UtxoRequest:
+      example:
+        addresses:
+        - addresses
+        - addresses
+      properties:
+        addresses:
+          default:
+          - kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          items:
+            type: string
+          type: array
+      title: UtxoRequest
+    UtxoResponse:
+      example:
+        address: kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+        utxoEntry:
+          amount: "[11501593788]"
+          isCoinbase: false
+          scriptPublicKey:
+            scriptPublicKey: 20c5629ce85f6618cd3ed1ac1c99dc6d3064ed244013555c51385d9efab0d0072fac
+          blockDaaScore: "18867232"
+        outpoint:
+          index: 0
+          transactionId: ef62efbc2825d3ef9ec1cf9b80506876ac077b64b11a39c8ef5e028415444dc9
+      properties:
+        address:
+          default: kaspatest:qpqz2vxj23kvh0m73ta2jjn2u4cv4tlufqns2eap8mxyyt0rvrxy6ejkful67
+          title: Address
+          type: string
+        outpoint:
+          $ref: '#/components/schemas/OutpointModel'
+        utxoEntry:
+          $ref: '#/components/schemas/UtxoModel'
+      required:
+      - outpoint
+      - utxoEntry
+      title: UtxoResponse
+    ValidationError:
+      example:
+        msg: msg
+        loc:
+        - ValidationError_loc_inner
+        - ValidationError_loc_inner
+        type: type
+      properties:
+        loc:
+          items:
+            $ref: '#/components/schemas/ValidationError_loc_inner'
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    VerboseDataModel:
+      example:
+        difficulty: 1.0246457001441578
+        transactionIds:
+        - transactionIds
+        - transactionIds
+        childrenHashes:
+        - childrenHashes
+        - childrenHashes
+        mergeSetBluesHashes:
+        - mergeSetBluesHashes
+        - mergeSetBluesHashes
+        mergeSetRedsHashes:
+        - mergeSetRedsHashes
+        - mergeSetRedsHashes
+        blueScore: "18483232"
+        selectedParentHash: 580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e
+        hash: 18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699
+        isChainBlock: false
+      properties:
+        hash:
+          default: 18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699
+          title: Hash
+          type: string
+        difficulty:
+          default:
+          - 4.10220452325294E12
+          title: Difficulty
+          type: number
+        selectedParentHash:
+          default: 580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e
+          title: Selectedparenthash
+          type: string
+        transactionIds:
+          default:
+          - 533f8314bf772259fe517f53507a79ebe61c8c6a11748d93a0835551233b3311
+          items:
+            type: string
+          type: array
+        blueScore:
+          default: "18483232"
+          title: Bluescore
+          type: string
+        childrenHashes:
+          items:
+            type: string
+          type: array
+        mergeSetBluesHashes:
+          default: []
+          items:
+            type: string
+          type: array
+        mergeSetRedsHashes:
+          default: []
+          items:
+            type: string
+          type: array
+        isChainBlock:
+          default: false
+          title: Ischainblock
+          type: boolean
+      title: VerboseDataModel
+    endpoints__get_address_transactions__PreviousOutpointLookupMode:
+      description: An enumeration.
+      enum:
+      - "no"
+      - light
+      - full
+      title: PreviousOutpointLookupMode
+      type: string
+    endpoints__get_blockdag__BlockdagResponse:
+      example:
+        blockCount: "260890"
+        difficulty: 0.8008281904610115
+        virtualParentHashes:
+        - virtualParentHashes
+        - virtualParentHashes
+        virtualDaaScore: "19989141"
+        tipHashes:
+        - tipHashes
+        - tipHashes
+        networkName: kaspa-mainnet
+        headerCount: "2131312"
+        pastMedianTime: "1656455670700"
+        pruningPointHash: "[5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d]"
+      properties:
+        networkName:
+          default: kaspa-mainnet
+          title: Networkname
+          type: string
+        blockCount:
+          default: "260890"
+          title: Blockcount
+          type: string
+        headerCount:
+          default: "2131312"
+          title: Headercount
+          type: string
+        tipHashes:
+          default:
+          - 78273854a739e3e379dfd34a262bbe922400d8e360e30e3f31228519a334350a
+          items:
+            type: string
+          type: array
+        difficulty:
+          default: 3.8706776777772E12
+          title: Difficulty
+          type: number
+        pastMedianTime:
+          default: "1656455670700"
+          title: Pastmediantime
+          type: string
+        virtualParentHashes:
+          default:
+          - 78273854a739e3e379dfd34a262bbe922400d8e360e30e3f31228519a334350a
+          items:
+            type: string
+          type: array
+        pruningPointHash:
+          default:
+          - 5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d
+          title: Pruningpointhash
+          type: string
+        virtualDaaScore:
+          default: "19989141"
+          title: Virtualdaascore
+          type: string
+      title: BlockdagResponse
+    endpoints__get_blocks__BlockHeader:
+      example:
+        utxoCommitment: 236d5f9ffd19b317a97693322c3e2ae11a44b5df803d71f1ccf6c2393bc6143c
+        hashMerkleRoot: e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887
+        acceptedIdMerkleRoot: 9bab45b027a0b2b47135b6f6f866e5e4040fc1fdf2fe56eb0c90a603ce86092b
+        daaScore: "19984482"
+        pruningPoint: 5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d
+        bits: 6
+        blueWork: 2d1b3f04f8a0dcd31
+        blueScore: "18483232"
+        version: 0
+        nonce: "14797571275553019490"
+        timestamp: "1656450648874"
+        parents:
+        - parentHashes:
+          - parentHashes
+          - parentHashes
+        - parentHashes:
+          - parentHashes
+          - parentHashes
+      properties:
+        version:
+          default: 1
+          title: Version
+          type: integer
+        hashMerkleRoot:
+          default: e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887
+          title: Hashmerkleroot
+          type: string
+        acceptedIdMerkleRoot:
+          default: 9bab45b027a0b2b47135b6f6f866e5e4040fc1fdf2fe56eb0c90a603ce86092b
+          title: Acceptedidmerkleroot
+          type: string
+        utxoCommitment:
+          default: 236d5f9ffd19b317a97693322c3e2ae11a44b5df803d71f1ccf6c2393bc6143c
+          title: Utxocommitment
+          type: string
+        timestamp:
+          default: "1656450648874"
+          title: Timestamp
+          type: string
+        bits:
+          default: 455233226
+          title: Bits
+          type: integer
+        nonce:
+          default: "14797571275553019490"
+          title: Nonce
+          type: string
+        daaScore:
+          default: "19984482"
+          title: Daascore
+          type: string
+        blueWork:
+          default: 2d1b3f04f8a0dcd31
+          title: Bluework
+          type: string
+        parents:
+          items:
+            $ref: '#/components/schemas/ParentHashModel'
+          type: array
+        blueScore:
+          default: "18483232"
+          title: Bluescore
+          type: string
+        pruningPoint:
+          default: 5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d
+          title: Pruningpoint
+          type: string
+      title: BlockHeader
+    endpoints__get_hashrate__BlockHeader:
+      example:
+        difficulty: 6
+        daaScore: "19984482"
+        blueScore: "18483232"
+        hash: e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887
+        timestamp: "1656450648874"
+      properties:
+        hash:
+          default: e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887
+          title: Hash
+          type: string
+        timestamp:
+          default: "1656450648874"
+          title: Timestamp
+          type: string
+        difficulty:
+          default: 1212312312
+          title: Difficulty
+          type: integer
+        daaScore:
+          default: "19984482"
+          title: Daascore
+          type: string
+        blueScore:
+          default: "18483232"
+          title: Bluescore
+          type: string
+      title: BlockHeader
+    endpoints__get_transactions__PreviousOutpointLookupMode:
+      description: An enumeration.
+      enum:
+      - "no"
+      - light
+      - full
+      title: PreviousOutpointLookupMode
+      type: string
+    endpoints__get_virtual_chain_blue_score__BlockdagResponse:
+      example:
+        blueScore: 0
+      properties:
+        blueScore:
+          default: 260890
+          title: Bluescore
+          type: integer
+      title: BlockdagResponse
+    Response_Get_Price_Info_Price_Get:
+      anyOf:
+      - $ref: '#/components/schemas/PriceResponse'
+      - type: string
+      title: Response Get Price Info Price Get
+    Response_Get_Blockreward_Info_Blockreward_Get:
+      anyOf:
+      - $ref: '#/components/schemas/BlockRewardResponse'
+      - type: string
+      title: Response Get Blockreward Info Blockreward Get
+    Response_Get_Halving_Info_Halving_Get:
+      anyOf:
+      - $ref: '#/components/schemas/HalvingResponse'
+      - type: string
+      title: Response Get Halving Info Halving Get
+    Response_Get_Hashrate_Info_Hashrate_Get:
+      anyOf:
+      - $ref: '#/components/schemas/HashrateResponse'
+      - type: string
+      title: Response Get Hashrate Info Hashrate Get
+    Response_Get_Marketcap_Info_Marketcap_Get:
+      anyOf:
+      - $ref: '#/components/schemas/MarketCapResponse'
+      - type: string
+      title: Response Get Marketcap Info Marketcap Get
+    ValidationError_loc_inner:
+      anyOf:
+      - type: string
+      - type: integer
